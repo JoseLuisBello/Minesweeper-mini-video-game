@@ -1,3 +1,6 @@
+A largo de este repositorio se mostrara la elaboracion del programa para la ceracion de un minijuego, en este caso sera la creacion de un Busca Minas.
+Para ello se necesitara 3 lenguajes, los cuales son HTML, JavaScrip (JS) y CSS.
+A continuacion se muestra el cuerpo del index.html.
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,141 +11,8 @@
 </head>
 <body>
     <h1>Buscaminas</h1>
-    <div id="mensaje">
-    </div>
-    <div id="tablero" class="tablero">
-    </div>
-    <button class="Boton_Reinicio" onclick="reiniciarJuego()">
-      Reiniciar
-    </button>
-
-    <script>
-        const ROWS = 8;
-        const COLS = 8;
-        const MINAS = 10;
-
-        let tablero = document.getElementById('tablero');
-        let casillas = [];
-        let ubicacionMinas = [];
-        let casillasReveladas = 0;
-
-        function inicializaTablero() {
-            tablero.innerHTML = '';
-            casillas = [];
-            for (let i = 0; i < ROWS; i++) {
-                casillas[i] = [];
-                for (let j = 0; j < COLS; j++) {
-                    let casilla = document.createElement('div');
-                    casilla.classList.add('casilla');
-                    casilla.dataset.row = i;
-                    casilla.dataset.col = j;
-                    casilla.dataset.state = 'hidden';
-                    casilla.addEventListener('click', manejarClickCasilla);
-                    tablero.appendChild(casilla);
-                    casillas[i][j] = casilla;
-                }
-            }
-        }
-
-        function colocarMinas() {
-            ubicacionMinas = [];
-            let minasColocadas = 0;
-            while (minasColocadas < MINAS) {
-                let row = Math.floor(Math.random() * ROWS);
-                let col = Math.floor(Math.random() * COLS);
-                if (!casillas[row][col].dataset.mine) {
-                    casillas[row][col].dataset.mine = 'true';
-                    ubicacionMinas.push({ row, col });
-                    minasColocadas++;
-                }
-            }
-        }
-
-        function manejarClickCasilla(event) {
-            let casilla = event.target;
-            let row = parseInt(casilla.dataset.row);
-            let col = parseInt(casilla.dataset.col);
-            if (casilla.dataset.state === 'hidden') {
-                if (casilla.dataset.mine === 'true') {
-                    revelarMinas();
-                    mostrarMensaje('¡Has perdido!', true);
-                } else {
-                    let count = contarMinasCercanas(row, col);
-                    casilla.textContent = count || '';
-                    casilla.dataset.state = 'revealed';
-                    casilla.classList.add('revealed');
-                    casillasReveladas++;
-                    if (count === 0) {
-                        revelarCasillasAdyacentes(row, col);
-                    }
-                    if (casillasReveladas === ROWS * COLS - MINAS) {
-                        mostrarMensaje('¡Has ganado!', false);
-                    }
-                }
-            }
-        }
-
-        function contarMinasCercanas(row, col) {
-            let count = 0;
-            for (let i = Math.max(0, row - 1); i <= Math.min(row + 1, ROWS - 1); i++) {
-                for (let j = Math.max(0, col - 1); j <= Math.min(col + 1, COLS - 1); j++) {
-                    if (casillas[i][j].dataset.mine === 'true') {
-                        count++;
-                    }
-                }
-            }
-            return count;
-        }
-
-        function revelarCasillasAdyacentes(row, col) {
-            for (let i = Math.max(0, row - 1); i <= Math.min(row + 1, ROWS - 1); i++) {
-                for (let j = Math.max(0, col - 1); j <= Math.min(col + 1, COLS - 1); j++) {
-                    let casilla = casillas[i][j];
-                    if (casilla.dataset.state === 'hidden') {
-                        let count = contarMinasCercanas(i, j);
-                        casilla.textContent = count || '';
-                        casilla.dataset.state = 'revealed';
-                        casilla.classList.add('revealed');
-                        casillasReveladas++;
-                        if (count === 0) {
-                            revelarCasillasAdyacentes(i, j);
-                        }
-                    }
-                }
-            }
-        }
-
-        function revelarMinas() {
-            ubicacionMinas.forEach(location => {
-                let { row, col } = location;
-                casillas[row][col].textContent = '*';
-                casillas[row][col].classList.add('mine', 'revealed');
-            });
-        }
-
-        function mostrarMensaje(message, isGameOver) {
-            let mensaje = document.getElementById('mensaje');
-            mensaje.textContent = message;
-            mensaje.style.color = isGameOver ? 'red' : 'green';
-            reinicio_x();
-        }
-
-        function reiniciarJuego() {
-            casillasReveladas = 0;
-            mostrarMensaje('');
-            inicializaTablero();
-            colocarMinas();
-        }
-
-        function reinicio_x(){
-            casillasReveladas = 0;
-            mostrarMensaje('');
-            inicializaTablero();
-            colocarMinas();
-
-        }
-        inicializaTablero();
-        colocarMinas();
-    </script>
+    <div id="mensaje"></div>
+    <div id="tablero" class="tablero"></div>
+    <button class="Boton_Reinicio" onclick="reiniciarJuego()">Reiniciar</button>
 </body>
 </html>
